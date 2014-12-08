@@ -1,4 +1,10 @@
 *.o
-main.efi
+*.efi
+*.vhd
+*.sdf
+*.suo
+*.user
+*.opensdf
+x64
 OVMF.fd
 image

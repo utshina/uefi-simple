@@ -1,15 +1,20 @@
-uefi-simple - UEFI development made easy
+UEFI:SIMPLE - UEFI development made easy
 ========================================
 
 A simple 64bit UEFI application of "Hello World!" which can be:
-* compiled on either on Linux or Windows (MinGW-w64).
+* compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
 * tested without the need for a separate UEFI environment (QEMU + OVMF)
 
 ## Prerequisites
 
-* MinGW-w64 (with msys, if running on Windows)
+* Visual Studio 2013 or MinGW-w64 (with msys, if using MinGW-w64 on Windows)
 * QEMU
 * git, wget, unzip
+
+__Note:__ If compiling with Visual Studio, you must first apply 
+`gnu-efi-MSVC-fixes.patch` to the `gnu-efi\` repository. I will try to get this
+patch integrated into the official gnu-efi tree so that patching can be avoided.
+
 
 ## Sub-Module initialization
 

@@ -1,0 +1,75 @@
+From 477c8f662e8ae444504c61248cf83747b1c0f846 Mon Sep 17 00:00:00 2001
+From: Pete Batard <pete@akeo.ie>
+Date: Mon, 8 Dec 2014 02:10:07 +0000
+Subject: [PATCH] MSVC fixes
+
+---
+ inc/ia64/efibind.h |  6 +++++-
+ lib/print.c        | 12 ++++++------
+ 2 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/inc/ia64/efibind.h b/inc/ia64/efibind.h
+index 6926876..3f4292f 100644
+--- a/inc/ia64/efibind.h
++++ b/inc/ia64/efibind.h
+@@ -172,8 +172,12 @@ typedef uint64_t   UINTN;
+ //
+ // BugBug: Need to find out if this is portable accross compliers.
+ //
+-#ifdef __GNUC__
++#if defined(__GNUC__)
+ #define MEMORY_FENCE()    __asm__ __volatile__ ("mf.a" ::: "memory")
++#elif defined(_MSC_VER)
++void __faststorefence (void);
++#pragma intrinsic (__faststorefence)
++#define MEMORY_FENCE() __faststorefence()
+ #else
+ void __mf (void);                       
+ #pragma intrinsic (__mf)  
+diff --git a/lib/print.c b/lib/print.c
+index a717cff..0db4fbf 100644
+--- a/lib/print.c
++++ b/lib/print.c
+@@ -95,8 +95,8 @@ typedef struct _pstate {
+     UINTN       AttrHighlight;
+     UINTN       AttrError;
+ 
+-    INTN EFIAPI       (*Output)(VOID *context, CHAR16 *str);
+-    INTN EFIAPI       (*SetAttr)(VOID *context, UINTN attr);
++    INTN        (EFIAPI *Output)(VOID *context, CHAR16 *str);
++    INTN        (EFIAPI *SetAttr)(VOID *context, UINTN attr);
+     VOID        *Context;    
+ 
+     // Current item being formatted
+@@ -235,7 +235,7 @@ Returns:
+     if (DbgOut) {
+         ps.Attr = DbgOut->Mode->Attribute;
+         ps.Context = DbgOut;
+-        ps.SetAttr = (INTN EFIAPI (*)(VOID *, UINTN))  DbgOut->SetAttribute;
++        ps.SetAttr = (INTN (EFIAPI *)(VOID *, UINTN))  DbgOut->SetAttribute;
+     }
+ 
+     SavedAttribute = ps.Attr;
+@@ -403,7 +403,7 @@ _PoolCatPrint (
+     IN CHAR16           *fmt,
+     IN va_list          args,
+     IN OUT POOL_PRINT   *spc,
+-    IN INTN EFIAPI      (*Output)(VOID *context, CHAR16 *str)
++    IN INTN             (EFIAPI *Output)(VOID *context, CHAR16 *str)
+     )
+ // Dispath function for SPrint, PoolPrint, and CatPrint
+ {
+@@ -781,8 +781,8 @@ _IPrint (
+ 
+     ZeroMem (&ps, sizeof(ps));
+     ps.Context = Out;
+-    ps.Output  = (INTN EFIAPI (*)(VOID *, CHAR16 *)) Out->OutputString;
+-    ps.SetAttr = (INTN EFIAPI (*)(VOID *, UINTN))  Out->SetAttribute;
++    ps.Output  = (INTN (EFIAPI *)(VOID *, CHAR16 *)) Out->OutputString;
++    ps.SetAttr = (INTN (EFIAPI *)(VOID *, UINTN))  Out->SetAttribute;
+     ps.Attr = Out->Mode->Attribute;
+    
+     back = (ps.Attr >> 4) & 0xF;
+-- 
+1.9.4.msysgit.2
+
