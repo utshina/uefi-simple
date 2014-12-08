@@ -3,7 +3,6 @@
 *.vhd
 *.sdf
 *.suo
-*.user
 *.opensdf
 x64
 OVMF.fd

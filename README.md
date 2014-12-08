@@ -1,19 +1,22 @@
 UEFI:SIMPLE - UEFI development made easy
 ========================================
 
-A simple 64bit UEFI application of "Hello World!" which can be:
-* compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
-* tested without the need for a separate UEFI environment (QEMU + OVMF)
+A simple 64bit UEFI "Hello World!" application that can:
+* be compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
+* be tested on the fly, through a QEMU/OVMF UEFI virtual machine.
 
 ## Prerequisites
 
-* Visual Studio 2013 or MinGW-w64 (with msys, if using MinGW-w64 on Windows)
-* QEMU
-* git, wget, unzip
+* [Visual Studio 2013](http://www.visualstudio.com/products/visual-studio-community-vs)
+  or [MinGW-w64](http://mingw-w64.sourceforge.net/) (with msys, if using MinGW-w64 on Windows)
+* [QEMU](http://www.qemu.org)
+* git
+* wget, unzip, if not using Visual Studio
 
-__Note:__ If compiling with Visual Studio, you must first apply 
-`gnu-efi-MSVC-fixes.patch` to the `gnu-efi\` repository. I will try to get this
-patch integrated into the official gnu-efi tree so that patching can be avoided.
+__Note:__ If compiling with Visual Studio, you should first apply 
+`gnu-efi-fixes-for-MSVC.patch` to the `gnu-efi\` repository.  
+I will try to get this patch integrated into the official gnu-efi tree so
+that this step can be avoided.
 
 
 ## Sub-Module initialization
@@ -27,10 +30,16 @@ git submodule update
 
 ## Compilation and testing
 
-Issue the following to compile the application and test it in QEMU:
+If using Visual Studio, just press `F5` to have the application compiled and
+launched in the QEMU emulator.
+
+If not using Visual Studio, issue the following from a command prompt:
 
 `make qemu`
 
-The Makefile will download the current version of the EDK2 UEFI firmware and run
-your application against it in an virtual UEFI environment.
-If the download fails, check http://tianocore.sourceforge.net/wiki/OVMF.
+Note that in both cases, the debug process will download the current version of
+the EDK2 UEFI firmware and run your application against it in the QEMU virtual
+UEFI environment.  
+In case the download fails, you can manually download the latest from:
+http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` in the top
+directory.

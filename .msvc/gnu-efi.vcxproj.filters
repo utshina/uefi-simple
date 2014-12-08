@@ -29,9 +29,6 @@
     <ClCompile Include="..\gnu-efi\lib\misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gnu-efi\lib\ia64\salpal.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gnu-efi\lib\boxdraw.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,10 +86,10 @@
     <ClCompile Include="..\gnu-efi\lib\x86_64\initplat.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gnu-efi\lib\ia64\math.c">
+    <ClCompile Include="..\gnu-efi\lib\error.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gnu-efi\lib\error.c">
+    <ClCompile Include="..\gnu-efi\lib\x86_64\math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
