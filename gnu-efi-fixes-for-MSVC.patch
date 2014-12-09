@@ -1,7 +1,16 @@
 From 508f5c586196f2259cc7d26a9f7a6dc1943593e2 Mon Sep 17 00:00:00 2001
 From: Pete Batard <pete@akeo.ie>
 Date: Mon, 8 Dec 2014 02:10:07 +0000
-Subject: [PATCH] fixes for MSVC
+Subject: [PATCH] fixes for MSVC compilation
+
+These fixes are needed to address the following error and warnings when compiling the library part
+using Visual Studio 2013 Community Edition (as in https://github.com/pbatard/uefi-simple):
+* "lib\x86_64\math.c(49): error C4235: nonstandard extension used : '_asm' keyword not supported
+  on this architecture"
+* "lib\print.c(98): error C2059: syntax error : '('" due to placement of EFIAPI macro
+* "lib\cmdline.c(94): warning C4090: 'function' : different 'const' qualifiers"
+* "lib\smbios.c(25): warning C4068: unknown pragma"
+
 
 ---
  lib/cmdline.c     |  4 ++--
