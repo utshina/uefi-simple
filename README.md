@@ -1,9 +1,10 @@
-UEFI:SIMPLE - UEFI development made easy
-========================================
+UEFI:SIMPLE - EFI development made easy
+=======================================
 
-A simple 64bit UEFI "Hello World!" application that can:
+A simple 64bit UEFI "Hello World!"-type application that can:
 * be compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
-* be tested on the fly, through a QEMU/OVMF UEFI virtual machine.
+* be tested on the fly, through a [QEMU](http://www.qemu.org)+[OVMF](http://tianocore.github.io/ovmf/)
+  UEFI virtual machine.
 
 ## Prerequisites
 
@@ -33,13 +34,13 @@ git submodule update
 If using Visual Studio, just press `F5` to have the application compiled and
 launched in the QEMU emulator.
 
-If not using Visual Studio, issue the following from a command prompt:
+If using MinGW-w64, issue the following from a command prompt:
 
 `make qemu`
 
 Note that in both cases, the debug process will download the current version of
 the EDK2 UEFI firmware and run your application against it in the QEMU virtual
 UEFI environment.  
-In case the download fails, you can manually download the latest from:
+In case the download fails, you can download the latest from:
 http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` in the top
 directory.

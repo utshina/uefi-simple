@@ -6,7 +6,9 @@
 '
 ' Note: You may get a prompt from the firewall when trying to download the BIOS file
 
-' Modify these variables if needed
+' Modify these variables as needed
+QEMU_PATH  = "C:\Program Files\qemu\"
+QEMU_EXE   = "qemu-system-x86_64w.exe"
 OVMF_ZIP   = "OVMF-X64-r15214.zip"
 OVMF_BIOS  = "OVMF.fd"
 FTP_SERVER = "ftp.heanet.ie"
@@ -61,17 +63,29 @@ Sub Unzip(Archive, File)
   Next
 End Sub
 
+
+' Check that QEMU is available
+If Not fso.FileExists(QEMU_PATH & QEMU_EXE) Then
+  Call WScript.Echo("'" & QEMU_PATH & QEMU_EXE & "' was not found." & vbCrLf &_
+    "Please make sure QEMU is installed or edit the path in '.msvc\debug.vbs'.")
+  Call WScript.Quit(1)
+End If
+
 ' Fetch the Tianocore UEFI BIOS and unzip it
 If Not fso.FileExists(OVMF_BIOS) Then
   Call WScript.Echo("The latest OVMF BIOS file, needed for QEMU/EFI, " &_
-   "will be downloaded from: " & FTP_URL & vbCrLf & vbCrLf &_
-   "Note: Unless you delete the file, this should only happen once.")
+    "will be downloaded from: " & FTP_URL & vbCrLf & vbCrLf &_
+    "Note: Unless you delete the file, this should only happen once.")
   Call DownloadFtp(FTP_SERVER, FTP_FILE)
   Call Unzip(OVMF_ZIP, OVMF_BIOS)
   Call fso.DeleteFile(OVMF_ZIP)
 End If
+If Not fso.FileExists(OVMF_BIOS) Then
+  Call WScript.Echo("There was a problem downloading or unzipping the OVMF BIOS file.")
+  Call WScript.Quit(1)
+End If
 
 ' Copy the app file as boot application and run it in QEMU
-Call shell.Run("%COMSPEC% /c mkdir ""image\\efi\\boot""", 0, True)
-Call fso.CopyFile(WScript.Arguments(0), "image\\efi\\boot\\bootx64.efi", True)
-Call shell.Run("""C:\\Program Files\\qemu\\qemu-system-x86_64w.exe"" -L . -bios OVMF.fd -net none -hda fat:image", 1, True)
+Call shell.Run("%COMSPEC% /c mkdir ""image\efi\boot""", 0, True)
+Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\bootx64.efi", True)
+Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ -L . -bios OVMF.fd -net none -hda fat:image", 1, True)

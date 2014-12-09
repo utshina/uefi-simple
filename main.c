@@ -9,7 +9,6 @@
 // Appplication entrypoint
 EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
-	EFI_STATUS Status;
 	EFI_INPUT_KEY Key;
 
 	InitializeLib(ImageHandle, SystemTable);
@@ -19,6 +18,8 @@ EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	Print(L"\nPress any key to exit.\n");
 	SystemTable->ConIn->Reset(SystemTable->ConIn, FALSE);
 	while (SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key) == EFI_NOT_READY);
+	// We use the EFI shut down call to close QEMU
+	RT->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
 
 	return EFI_SUCCESS;
 }
