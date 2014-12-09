@@ -55,8 +55,6 @@
       <ExceptionHandling>false</ExceptionHandling>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <CompileAs>CompileAsC</CompileAs>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
