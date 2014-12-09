@@ -17,44 +17,61 @@ FTP_URL    = "ftp://" & FTP_SERVER & "/" & FTP_FILE
 Set fso = CreateObject("Scripting.FileSystemObject") 
 Set shell = CreateObject("WScript.Shell")
 
-Sub DownloadBios()
+' Download a file from FTP
+Sub DownloadFtp(Server, Path)
   Set file = fso.CreateTextFile("ftp.txt", True)
-  Call file.Write("open " & FTP_SERVER & vbCrLf &_
+  Call file.Write("open " & Server & vbCrLf &_
     "anonymous" & vbCrLf & "user" & vbCrLf & "bin" & vbCrLf &_
-    "get " & FTP_FILE & vbCrLf & "bye" & vbCrLf)
+    "get " & Path & vbCrLf & "bye" & vbCrLf)
   Call file.Close()
   Call shell.Run("%comspec% /c ftp -s:ftp.txt > NUL", 0, True)
   Call fso.DeleteFile("ftp.txt")
 End Sub
 
-Sub UnzipBios()
+' Download a file from HTTP
+Sub DownloadHttp(Url, File)
+  Const BINARY = 1
+  Const OVERWRITE = 2
+  Set xHttp = createobject("Microsoft.XMLHTTP")
+  Set bStrm = createobject("Adodb.Stream")
+  Call xHttp.Open("GET", Url, False)
+  Call xHttp.Send()
+  With bStrm
+    .type = BINARY
+    .open
+    .write xHttp.responseBody
+    .savetofile File, OVERWRITE
+  End With
+End Sub
+
+' Unzip a specific file from an archive
+Sub Unzip(Archive, File)
   Const NOCONFIRMATION = &H10&
   Const NOERRORUI = &H400&
   Const SIMPLEPROGRESS = &H100&
   unzipFlags = NOCONFIRMATION + NOERRORUI + SIMPLEPROGRESS
-
   Set objShell = CreateObject("Shell.Application")
-  Set objSource = objShell.NameSpace(fso.GetAbsolutePathName(OVMF_ZIP)).Items()
+  Set objSource = objShell.NameSpace(fso.GetAbsolutePathName(Archive)).Items()
   Set objTarget = objShell.NameSpace(fso.GetAbsolutePathName("."))
-  ' Only extract the filw we are interested in
+  ' Only extract the file we are interested in
   For i = 0 To objSource.Count - 1
-    If objSource.Item(i).Name = OVMF_BIOS Then
+    If objSource.Item(i).Name = File Then
       Call objTarget.CopyHere(objSource.Item(i), unzipFlags)
     End If
   Next
 End Sub
 
-' Retrieve the UEFI BIOS from ftp and unzip it
+' Fetch the Tianocore UEFI BIOS and unzip it
 If Not fso.FileExists(OVMF_BIOS) Then
   Call WScript.Echo("The latest OVMF BIOS file, needed for QEMU/EFI, " &_
    "will be downloaded from: " & FTP_URL & vbCrLf & vbCrLf &_
    "Note: Unless you delete the file, this should only happen once.")
-  Call DownloadBIOS()
-  Call UnzipBios()
+  Call DownloadFtp(FTP_SERVER, FTP_FILE)
+  Call Unzip(OVMF_ZIP, OVMF_BIOS)
   Call fso.DeleteFile(OVMF_ZIP)
 End If
 
-' Copy the latest build and run it in QEMU
+' Copy the app file as boot application and run it in QEMU
 Call shell.Run("%COMSPEC% /c mkdir ""image\\efi\\boot""", 0, True)
 Call fso.CopyFile(WScript.Arguments(0), "image\\efi\\boot\\bootx64.efi", True)
-Call shell.Run("""C:\\Program Files\\qemu\\qemu-system-x86_64w.exe"" -L . -bios OVMF.fd -hda fat:image", 1, True)
+Call shell.Run("""C:\\Program Files\\qemu\\qemu-system-x86_64w.exe"" -L . -bios OVMF.fd -net none -hda fat:image", 1, True)
