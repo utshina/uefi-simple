@@ -18,8 +18,10 @@ EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	Print(L"\nPress any key to exit.\n");
 	SystemTable->ConIn->Reset(SystemTable->ConIn, FALSE);
 	while (SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key) == EFI_NOT_READY);
-	// We use the EFI shut down call to close QEMU
+#if defined(_DEBUG)
+	// If running in debug mode, use the EFI shut down call to close QEMU
 	RT->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
+#endif
 
 	return EFI_SUCCESS;
 }

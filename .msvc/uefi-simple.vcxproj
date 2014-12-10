@@ -74,7 +74,6 @@
       <SubSystem>EFI Application</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\gnu-efi;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -104,7 +103,6 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\gnu-efi;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkStatus>false</LinkStatus>
     </Link>
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.c" />

@@ -1,7 +1,7 @@
 UEFI:SIMPLE - EFI development made easy
 =======================================
 
-A simple 64bit UEFI "Hello World!"-type application that can:
+A simple 64bit UEFI "Hello World!" style application that can:
 * be compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
 * be tested on the fly, through a [QEMU](http://www.qemu.org)+[OVMF](http://tianocore.github.io/ovmf/)
   UEFI virtual machine.
