@@ -88,4 +88,5 @@ End If
 ' Copy the app file as boot application and run it in QEMU
 Call shell.Run("%COMSPEC% /c mkdir ""image\efi\boot""", 0, True)
 Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\bootx64.efi", True)
+' You can add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
 Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ -L . -bios OVMF.fd -net none -hda fat:image", 1, True)
