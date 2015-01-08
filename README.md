@@ -14,12 +14,6 @@ A simple 64bit UEFI "Hello World!" style application that can:
 * git
 * wget, unzip, if not using Visual Studio
 
-__Note:__ If compiling with Visual Studio, you should first apply 
-`gnu-efi-fixes-for-MSVC.patch` to the `gnu-efi\` repository.  
-I will try to get this patch integrated into the official gnu-efi tree so
-that this step can be avoided.
-
-
 ## Sub-Module initialization
 
 For convenience, the project relies on the gnu-efi library (but __not__ on
