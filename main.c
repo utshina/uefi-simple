@@ -20,7 +20,7 @@ typedef struct _EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL {
 } EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
 
 typedef struct {
-    char                             a[68];
+    char                             a[52];
     EFI_HANDLE                       ConsoleOutHandle;
     EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL  *ConOut;
 } EFI_SYSTEM_TABLE;
