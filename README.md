@@ -1,8 +1,9 @@
 UEFI:SIMPLE - EFI development made easy
 =======================================
 
-A simple 64bit UEFI "Hello World!" style application that can:
-* be compiled on either on Windows or Linux (Visual Studio 2013 or MinGW-w64).
+A simple UEFI "Hello World!" style application that can:
+* be compiled on either on Windows or Linux (using Visual Studio 2013 or MinGW-w64).
+* be compiled for either x86_32 or x86_64 UEFI targets
 * be tested on the fly, through a [QEMU](http://www.qemu.org)+[OVMF](http://tianocore.github.io/ovmf/)
   UEFI virtual machine.
 
@@ -36,5 +37,5 @@ Note that in both cases, the debug process will download the current version of
 the EDK2 UEFI firmware and run your application against it in the QEMU virtual
 UEFI environment.  
 In case the download fails, you can download the latest from:
-http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` in the top
-directory.
+http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` as
+`OVMF_x86_32.fd` or `OVMF_x86_64.fd`in the top directory.

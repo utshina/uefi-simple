@@ -6,11 +6,25 @@
 '
 ' Note: You may get a prompt from the firewall when trying to download the BIOS file
 
+' Process arguments
+TARGET     = WScript.Arguments(1)
+If (TARGET = "x86") Then
+  OVMF_ZIP  = "OVMF-IA32-r15214.zip"
+  OVMF_BIOS = "OVMF_x86_32.fd"
+  BOOT_NAME = "bootia32.efi"
+ElseIf (TARGET = "x64") Then
+  OVMF_ZIP  = "OVMF-X64-r15214.zip"
+  OVMF_BIOS = "OVMF_x86_64.fd"
+  BOOT_NAME = "bootx64.efi"
+Else
+  MsgBox("Unknown target: " & TARGET)
+  Call WScript.Quit(1)
+End If
+
+
 ' Modify these variables as needed
 QEMU_PATH  = "C:\Program Files\qemu\"
 QEMU_EXE   = "qemu-system-x86_64w.exe"
-OVMF_ZIP   = "OVMF-X64-r15214.zip"
-OVMF_BIOS  = "OVMF.fd"
 FTP_SERVER = "ftp.heanet.ie"
 FTP_FILE   = "pub/download.sourceforge.net/pub/sourceforge/e/ed/edk2/OVMF/" & OVMF_ZIP
 FTP_URL    = "ftp://" & FTP_SERVER & "/" & FTP_FILE
@@ -77,7 +91,8 @@ If Not fso.FileExists(OVMF_BIOS) Then
     "will be downloaded from: " & FTP_URL & vbCrLf & vbCrLf &_
     "Note: Unless you delete the file, this should only happen once.")
   Call DownloadFtp(FTP_SERVER, FTP_FILE)
-  Call Unzip(OVMF_ZIP, OVMF_BIOS)
+  Call Unzip(OVMF_ZIP, "OVMF.fd")
+  Call fso.MoveFile("OVMF.fd", OVMF_BIOS)
   Call fso.DeleteFile(OVMF_ZIP)
 End If
 If Not fso.FileExists(OVMF_BIOS) Then
@@ -87,6 +102,6 @@ End If
 
 ' Copy the app file as boot application and run it in QEMU
 Call shell.Run("%COMSPEC% /c mkdir ""image\efi\boot""", 0, True)
-Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\bootx64.efi", True)
+Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\" & BOOT_NAME, True)
 ' You can add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
-Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ -L . -bios OVMF.fd -net none -hda fat:image", 1, True)
+Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ -L . -bios " & OVMF_BIOS & " -net none -hda fat:image", 1, True)
