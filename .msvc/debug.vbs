@@ -6,7 +6,13 @@
 '
 ' Note: You may get a prompt from the firewall when trying to download the BIOS file
 
-' Process arguments
+' Modify these variables as needed
+QEMU_PATH  = "C:\Program Files\qemu\"
+QEMU_EXE   = "qemu-system-x86_64w.exe"
+FTP_SERVER = "ftp.heanet.ie"
+FTP_DIR    = "pub/download.sourceforge.net/pub/sourceforge/e/ed/edk2/OVMF/"
+
+' You shouldn't have to modify anything below this
 TARGET     = WScript.Arguments(1)
 If (TARGET = "x86") Then
   OVMF_ZIP  = "OVMF-IA32-r15214.zip"
@@ -20,13 +26,7 @@ Else
   MsgBox("Unknown target: " & TARGET)
   Call WScript.Quit(1)
 End If
-
-
-' Modify these variables as needed
-QEMU_PATH  = "C:\Program Files\qemu\"
-QEMU_EXE   = "qemu-system-x86_64w.exe"
-FTP_SERVER = "ftp.heanet.ie"
-FTP_FILE   = "pub/download.sourceforge.net/pub/sourceforge/e/ed/edk2/OVMF/" & OVMF_ZIP
+FTP_FILE   = FTP_DIR & OVMF_ZIP
 FTP_URL    = "ftp://" & FTP_SERVER & "/" & FTP_FILE
 
 ' Globals
