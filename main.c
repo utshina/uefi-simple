@@ -1,12 +1,12 @@
 /*
  * UEFI:SIMPLE - UEFI development made easy
- * Copyright © 2014 Pete Batard <pete@akeo.ie> - Public Domain
+ * Copyright © 2014-2015 Pete Batard <pete@akeo.ie> - Public Domain
  * See COPYING for the full licensing terms.
  */
 #include <efi.h>
 #include <efilib.h>
 
-// Appplication entrypoint
+// Application entrypoint
 EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
 	EFI_INPUT_KEY Key;
