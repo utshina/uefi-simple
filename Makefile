@@ -46,8 +46,8 @@ image/efi/boot/bootx64.efi: main.efi
 	cp -f $< $@
 
 OVMF.fd:
-	# Use an explicit FTP mirror, since SF's HTTP download links are more miss than hit...
-	wget ftp://ftp.heanet.ie/pub/download.sourceforge.net/pub/sourceforge/e/ed/edk2/OVMF/$(OVMF_ZIP)
+	# Use our own mirror, since SourceForge are being such ASSES about direct downloads...
+	wget http://efi.akeo.ie/OVMF/$(OVMF_ZIP)
 	unzip $(OVMF_ZIP) OVMF.fd
 	rm $(OVMF_ZIP)
 
