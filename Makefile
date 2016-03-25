@@ -1,9 +1,10 @@
+ARCH    = x86_64
 CC      = x86_64-w64-mingw32-gcc
 CFLAGS  = -mno-red-zone -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
-CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/x86_64 -I$(GNUEFI_PATH)/inc/protocol
+CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/$(ARCH) -I$(GNUEFI_PATH)/inc/protocol
 # Linker option '--subsystem 10' specifies an EFI application. 
 LDFLAGS = -nostdlib -shared -Wl,-dll -Wl,--subsystem,10 -e EfiMain
-LIBS    = -L$(GNUEFI_PATH)/lib -lgcc -lefi
+LIBS    = -L$(GNUEFI_PATH)/$(ARCH)/lib -lgcc -lefi
 
 GNUEFI_PATH = $(CURDIR)/gnu-efi
 # Set parameters according to our platform
@@ -27,12 +28,12 @@ ifneq ($(GCCNEWENOUGH),1)
 endif
 
 .PHONY: all
-all: $(GNUEFI_PATH)/lib/libefi.a main.efi
+all: $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a main.efi
 
-$(GNUEFI_PATH)/lib/libefi.a:
+$(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
 	$(MAKE) -C$(GNUEFI_PATH) CROSS_COMPILE=$(CROSS_COMPILE) lib
 
-%.efi: %.o $(GNUEFI_PATH)/lib/libefi.a
+%.efi: %.o $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a
 	$(CC) $(LDFLAGS) $< -o $@ $(LIBS)
 
 %.o: %.c
@@ -56,5 +57,5 @@ clean:
 	rm -rf image
 
 superclean: clean
-	$(MAKE) -C$(GNUEFI_PATH)/lib/ clean
+	$(MAKE) -C$(GNUEFI_PATH) clean
 	rm -f OVMF.fd
