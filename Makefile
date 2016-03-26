@@ -1,21 +1,48 @@
-ARCH    = x86_64
-CC      = x86_64-w64-mingw32-gcc
-CFLAGS  = -mno-red-zone -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
-CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/$(ARCH) -I$(GNUEFI_PATH)/inc/protocol
-# Linker option '--subsystem 10' specifies an EFI application. 
-LDFLAGS = -nostdlib -shared -Wl,-dll -Wl,--subsystem,10 -e EfiMain
-LIBS    = -L$(GNUEFI_PATH)/$(ARCH)/lib -lgcc -lefi
+TARGET = x64
 
-GNUEFI_PATH = $(CURDIR)/gnu-efi
+ifeq ($(TARGET),x64)
+	ARCH          = x86_64
+	CROSS_COMPILE = x86_64-w64-mingw32-
+	OVMF_ARCH     = X64
+	QEMU_ARCH     = x86_64
+	EP_PREFIX     =
+	CFLAGS        = -m64 -mno-red-zone -fpic
+	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10
+else ifeq ($(TARGET),ia32)
+	ARCH          = ia32
+	CROSS_COMPILE = i686-w64-mingw32-
+	OVMF_ARCH     = IA32
+	QEMU_ARCH     = i386
+	EP_PREFIX     = _
+	CFLAGS       = -m32 -mno-red-zone
+	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10
+else ifeq ($(TARGET),arm)
+	ARCH          = arm
+	CROSS_COMPILE = arm-linux-gnueabihf-
+	OVMF_ARCH     = ARM
+	QEMU_ARCH     = arm
+	EP_PREFIX     =
+	CFLAGS        = -marm -fpic -fshort-wchar
+	LDFLAGS       =
+endif
+
 # Set parameters according to our platform
 ifeq ($(SYSTEMROOT),)
-  QEMU = qemu-system-x86_64 -nographic
-  CROSS_COMPILE = x86_64-w64-mingw32-
+  QEMU = qemu-system-$(QEMU_ARCH) -nographic
 else
-  QEMU = "/c/Program Files/qemu/qemu-system-x86_64w.exe"
+  QEMU = "/c/Program Files/qemu/qemu-system-$(QEMU_ARCH)w.exe"
   CROSS_COMPILE =
 endif
-OVMF_ZIP = OVMF-X64-r15214.zip
+GNUEFI_PATH = $(CURDIR)/gnu-efi
+
+CC     := $(CROSS_COMPILE)gcc
+CFLAGS += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
+CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/$(ARCH) -I$(GNUEFI_PATH)/inc/protocol
+# Linker option '--subsystem 10' specifies an EFI application. 
+LDFLAGS+= -nostdlib -shared -e $(EP_PREFIX)EfiMain
+LIBS   := -L$(GNUEFI_PATH)/$(ARCH)/lib -lgcc -lefi
+
+OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 
 GCCVERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)
 GCCMINOR   := $(shell $(CC) -dumpversion | cut -f2 -d.)
@@ -31,7 +58,7 @@ endif
 all: $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a main.efi
 
 $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
-	$(MAKE) -C$(GNUEFI_PATH) CROSS_COMPILE=$(CROSS_COMPILE) lib
+	$(MAKE) -C$(GNUEFI_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH) lib
 
 %.efi: %.o $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a
 	$(CC) $(LDFLAGS) $< -o $@ $(LIBS)
@@ -39,10 +66,10 @@ $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
 %.o: %.c
 	$(CC) $(CFLAGS) -ffreestanding -c $<
 
-qemu: all OVMF.fd image/efi/boot/bootx64.efi
+qemu: all OVMF.fd image/efi/boot/boot$(TARGET).efi
 	$(QEMU) -bios ./OVMF.fd -net none -hda fat:image
 
-image/efi/boot/bootx64.efi: main.efi
+image/efi/boot/boot$(TARGET).efi: main.efi
 	mkdir -p image/efi/boot
 	cp -f $< $@
 
