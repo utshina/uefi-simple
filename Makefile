@@ -1,13 +1,14 @@
 TARGET = x64
 
+# Linker option '--subsystem 10' specifies an EFI application. 
 ifeq ($(TARGET),x64)
 	ARCH          = x86_64
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	OVMF_ARCH     = X64
 	QEMU_ARCH     = x86_64
 	EP_PREFIX     =
-	CFLAGS        = -m64 -mno-red-zone -fpic
-	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10
+	CFLAGS        = -m64 -mno-red-zone
+	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10 -nostdlib
 else ifeq ($(TARGET),ia32)
 	ARCH          = ia32
 	CROSS_COMPILE = i686-w64-mingw32-
@@ -15,6 +16,8 @@ else ifeq ($(TARGET),ia32)
 	QEMU_ARCH     = i386
 	EP_PREFIX     = _
 	CFLAGS       = -m32 -mno-red-zone
+	# Can't use -nostdlib as we're missing an implementation of __umoddi3
+	# and __udivdi3, required by ia32/math.c and present in libgcc.a
 	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10
 else ifeq ($(TARGET),arm)
 	ARCH          = arm
@@ -22,8 +25,8 @@ else ifeq ($(TARGET),arm)
 	OVMF_ARCH     = ARM
 	QEMU_ARCH     = arm
 	EP_PREFIX     =
-	CFLAGS        = -marm -fpic -fshort-wchar
-	LDFLAGS       =
+	CFLAGS        = -marm -fpic -fshort-wchar -nostdlib
+	LDFLAGS       = -Wl,--no-wchar-size-warning
 endif
 
 # Set parameters according to our platform
@@ -38,9 +41,8 @@ GNUEFI_PATH = $(CURDIR)/gnu-efi
 CC     := $(CROSS_COMPILE)gcc
 CFLAGS += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
 CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/$(ARCH) -I$(GNUEFI_PATH)/inc/protocol
-# Linker option '--subsystem 10' specifies an EFI application. 
-LDFLAGS+= -nostdlib -shared -e $(EP_PREFIX)EfiMain
-LIBS   := -L$(GNUEFI_PATH)/$(ARCH)/lib -lgcc -lefi
+LDFLAGS+= -shared -e $(EP_PREFIX)EfiMain
+LIBS   := -L$(GNUEFI_PATH)/$(ARCH)/lib -lefi
 
 OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 

@@ -8,7 +8,6 @@
 
 ' Modify these variables as needed
 QEMU_PATH  = "C:\Program Files\qemu\"
-QEMU_EXE   = "qemu-system-x86_64w.exe"
 OVMF_DIR   = "http://efi.akeo.ie/OVMF/"
 OVMF_REV   = "r15214"
 ' Set to True if you need to download a file that might be cached locally
@@ -21,15 +20,18 @@ If (TARGET = "x86") Then
   OVMF_ZIP  = "OVMF-IA32-" & OVMF_REV & ".zip"
   OVMF_BIOS = "OVMF_x86_32.fd"
   BOOT_NAME = "bootia32.efi"
+  QEMU_ARCH = "i386"
 ElseIf (TARGET = "x64") Then
   OVMF_ZIP  = "OVMF-X64-" & OVMF_REV & ".zip"
   OVMF_BIOS = "OVMF_x86_64.fd"
   BOOT_NAME = "bootx64.efi"
+  QEMU_ARCH = "x86_64"
 Else
-  MsgBox("Unknown target: " & TARGET)
+  MsgBox("Unsupported debug target: " & TARGET)
   Call WScript.Quit(1)
 End If
 OVMF_URL   = OVMF_DIR & OVMF_ZIP
+QEMU_EXE   = "qemu-system-" & QEMU_ARCH & "w.exe"
 
 ' Globals
 Set fso = CreateObject("Scripting.FileSystemObject")
