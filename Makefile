@@ -80,17 +80,19 @@ $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
 %.o: %.c
 	$(CC) $(CFLAGS) -ffreestanding -c $<
 
-qemu: all OVMF.fd image/efi/boot/boot$(TARGET).efi
-	$(QEMU) -bios ./OVMF.fd -net none -hda fat:image
+qemu: CFLAGS += -D_DEBUG
+qemu: all OVMF_$(OVMF_ARCH).fd image/efi/boot/boot$(TARGET).efi
+	$(QEMU) -bios ./OVMF_$(OVMF_ARCH).fd -net none -hda fat:image
 
 image/efi/boot/boot$(TARGET).efi: main.efi
 	mkdir -p image/efi/boot
 	cp -f $< $@
 
-OVMF.fd:
+OVMF_$(OVMF_ARCH).fd:
 	# Use our own mirror, since SourceForge are being such ASSES about direct downloads...
 	wget http://efi.akeo.ie/OVMF/$(OVMF_ZIP)
 	unzip $(OVMF_ZIP) OVMF.fd
+	mv OVMF.fd OVMF_$(OVMF_ARCH).fd
 	rm $(OVMF_ZIP)
 
 clean:
@@ -99,4 +101,4 @@ clean:
 
 superclean: clean
 	$(MAKE) -C$(GNUEFI_PATH) clean
-	rm -f OVMF.fd
+	rm -f *.fd

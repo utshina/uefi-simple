@@ -17,19 +17,19 @@ NO_CACHE   = False
 TARGET     = WScript.Arguments(1)
 
 If (TARGET = "x86") Then
-  OVMF_ZIP  = "OVMF-IA32-" & OVMF_REV & ".zip"
-  OVMF_BIOS = "OVMF_x86_32.fd"
-  BOOT_NAME = "bootia32.efi"
+  UEFI_EXT  = "ia32"
   QEMU_ARCH = "i386"
 ElseIf (TARGET = "x64") Then
-  OVMF_ZIP  = "OVMF-X64-" & OVMF_REV & ".zip"
-  OVMF_BIOS = "OVMF_x86_64.fd"
-  BOOT_NAME = "bootx64.efi"
+  UEFI_EXT  = "x64"
   QEMU_ARCH = "x86_64"
 Else
   MsgBox("Unsupported debug target: " & TARGET)
   Call WScript.Quit(1)
 End If
+BOOT_NAME  = "boot" & UEFI_EXT & ".efi"
+OVMF_ARCH  = UCase(UEFI_EXT)
+OVMF_ZIP   = "OVMF-" & OVMF_ARCH & "-" & OVMF_REV & ".zip"
+OVMF_BIOS  = "OVMF_" & OVMF_ARCH & ".fd"
 OVMF_URL   = OVMF_DIR & OVMF_ZIP
 QEMU_EXE   = "qemu-system-" & QEMU_ARCH & "w.exe"
 
