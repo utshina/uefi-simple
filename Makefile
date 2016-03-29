@@ -1,19 +1,21 @@
 TARGET = x64
 
-# Linker option '--subsystem 10' specifies an EFI application. 
 ifeq ($(TARGET),x64)
 	ARCH          = x86_64
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	OVMF_ARCH     = X64
 	QEMU_ARCH     = x86_64
+	GCC_ARCH      = x86_64
 	EP_PREFIX     =
 	CFLAGS        = -m64 -mno-red-zone
+	# Linker option '--subsystem 10' specifies an EFI application. 
 	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10 -nostdlib
 else ifeq ($(TARGET),ia32)
 	ARCH          = ia32
 	CROSS_COMPILE = i686-w64-mingw32-
 	OVMF_ARCH     = IA32
 	QEMU_ARCH     = i386
+	GCC_ARCH      = i686
 	EP_PREFIX     = _
 	CFLAGS       = -m32 -mno-red-zone
 	# Can't use -nostdlib as we're missing an implementation of __umoddi3
@@ -24,6 +26,7 @@ else ifeq ($(TARGET),arm)
 	CROSS_COMPILE = arm-linux-gnueabihf-
 	OVMF_ARCH     = ARM
 	QEMU_ARCH     = arm
+	GCC_ARCH      = arm
 	EP_PREFIX     =
 	CFLAGS        = -marm -fpic -fshort-wchar -nostdlib
 	LDFLAGS       = -Wl,--no-wchar-size-warning
@@ -46,14 +49,23 @@ LIBS   := -L$(GNUEFI_PATH)/$(ARCH)/lib -lefi
 
 OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 
+ifeq (, $(shell which $(CC)))
+  $(error The selected compiler ($(CC)) was not found)
+endif
+
 GCCVERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)
 GCCMINOR   := $(shell $(CC) -dumpversion | cut -f2 -d.)
+GCCMACHINE := $(shell $(CC) -dumpmachine)
 GCCNEWENOUGH := $(shell ( [ $(GCCVERSION) -gt "4" ]           \
                           || ( [ $(GCCVERSION) -eq "4" ]      \
                                && [ $(GCCMINOR) -ge "7" ] ) ) \
                         && echo 1)
 ifneq ($(GCCNEWENOUGH),1)
   $(error You need GCC 4.7 or later)
+endif
+
+ifneq ($(GCC_ARCH),$(findstring $(GCC_ARCH), $(GCCMACHINE)))
+  $(error The selected compiler ($(CC)) is not set for $(TARGET))
 endif
 
 .PHONY: all

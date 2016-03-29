@@ -2,10 +2,10 @@ UEFI:SIMPLE - EFI development made easy
 =======================================
 
 A simple UEFI "Hello World!" style application that can:
-* be compiled on either on Windows or Linux (using Visual Studio 2015 or MinGW-w64).
-* be compiled for either x86_32 or x86_64 UEFI targets
+* be compiled on Windows or Linux (using Visual Studio 2015, MinGW or gcc).
+* be compiled for x86_32, x86_64 or ARM targets
 * be tested on the fly, through a [QEMU](http://www.qemu.org)+[OVMF](http://tianocore.github.io/ovmf/)
-  UEFI virtual machine.
+  UEFI virtual machine (x86_32 or x86_64 __ONLY__).
 
 ## Prerequisites
 
@@ -29,13 +29,26 @@ git submodule update
 If using Visual Studio, just press `F5` to have the application compiled and
 launched in the QEMU emulator.
 
-If using MinGW-w64, issue the following from a command prompt:
+If using MinGW or Linux, issue the following from a command prompt:
 
-`make qemu`
+`make TARGET=<target>`
 
-Note that in both cases, the debug process will download the current version of
-the EDK2 UEFI firmware and run your application against it in the QEMU virtual
-UEFI environment.  
-In case the download fails, you can download the latest from:
+where `target` is one of `ia32` (x86_32), `x64` (x86_64) or `arm`.
+
+You can also add `qemu` as a parameter to run the application in QEMU, in which
+case the debug process will download the current version of the EDK2 UEFI
+firmware and run your application against it in the QEMU virtual UEFI environment.  
+Note that, in case the download fails, you can download the latest from:
 http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` as
-`OVMF_x86_32.fd` or `OVMF_x86_64.fd`in the top directory.
+`OVMF_x86_32.fd` or `OVMF_x86_64.fd` in the top directory.
+
+## Visual Studio and ARM support
+
+To enable ARM compilation in Visual Studio 2015, you must perform the following:
+* Make sure Visual Studio is fully closed.
+* Navigate to `C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Platforms\ARM` and
+  remove the read-only attribute on `Platform.Common.props`.
+* With a text editor __running with Administrative privileges__ open:  
+  `C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Platforms\ARM\Platform.Common.props`.
+* Under the `<PropertyGroup>` section add the following:  
+  `<WindowsSDKDesktopARMSupport>true</WindowsSDKDesktopARMSupport>`
