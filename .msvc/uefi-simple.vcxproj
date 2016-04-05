@@ -226,8 +226,6 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <Optimization>MinSpace</Optimization>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -258,8 +256,6 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <Optimization>MinSpace</Optimization>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -290,8 +286,6 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <Optimization>MinSpace</Optimization>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
