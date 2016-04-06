@@ -29,7 +29,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DFA0BA98-D0BA-4176-9A34-B5BA6355B1DE}</ProjectGuid>
     <RootNamespace>uefi-simple</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -95,42 +94,42 @@
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x86_64\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)x86_64\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x86_32\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)x86_32\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)arm\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)arm\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x86_64\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)x86_64\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x86_32\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)x86_32\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)arm\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)arm\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -246,7 +245,6 @@
       <SubSystem>EFI Application</SubSystem>
       <AdditionalDependencies>gnu-efi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)x86_64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LinkStatus>false</LinkStatus>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
@@ -276,7 +274,6 @@
       <SubSystem>EFI Application</SubSystem>
       <AdditionalDependencies>gnu-efi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)x86_32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LinkStatus>false</LinkStatus>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
@@ -304,7 +301,6 @@
       <SubSystem>EFI Application</SubSystem>
       <AdditionalDependencies>gnu-efi.lib;libcmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)arm\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LinkStatus>false</LinkStatus>
       <OptimizeReferences>true</OptimizeReferences>
       <RandomizedBaseAddress />
     </Link>
