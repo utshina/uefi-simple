@@ -9,8 +9,9 @@ A simple UEFI "Hello World!" style application that can:
 
 ## Prerequisites
 
-* [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs)
-  or [MinGW-w64](http://mingw-w64.sourceforge.net/) (with msys, if using MinGW-w64 on Windows)
+* [Visual Studio 2015](http://www.visualstudio.com/products/visual-studio-community-vs)
+  or [MinGW](http://www.mingw.org/)/[MinGW64](http://mingw-w64.sourceforge.net/)
+  (preferably installed using [msys2](https://sourceforge.net/projects/msys2/))
 * [QEMU](http://www.qemu.org)
 * git
 * wget, unzip, if not using Visual Studio
