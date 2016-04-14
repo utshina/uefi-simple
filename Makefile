@@ -1,4 +1,9 @@
-TARGET = x64
+TARGET    = x64
+# You can alter the subsystem according to your EFI binary target:
+# 10 = EFI application
+# 11 = EFI boot service driver
+# 12 = EFI runtime driver
+SUBSYSTEM = 10
 
 ifeq ($(TARGET),x64)
 	ARCH          = x86_64
@@ -8,8 +13,7 @@ ifeq ($(TARGET),x64)
 	GCC_ARCH      = x86_64
 	EP_PREFIX     =
 	CFLAGS        = -m64 -mno-red-zone
-	# Linker option '--subsystem 10' specifies an EFI application. 
-	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10 -nostdlib
+	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM) -nostdlib
 else ifeq ($(TARGET),ia32)
 	ARCH          = ia32
 	CROSS_COMPILE = i686-w64-mingw32-
@@ -20,7 +24,7 @@ else ifeq ($(TARGET),ia32)
 	CFLAGS       = -m32 -mno-red-zone
 	# Can't use -nostdlib as we're missing an implementation of __umoddi3
 	# and __udivdi3, required by ia32/math.c and present in libgcc.a
-	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,10
+	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM)
 else ifeq ($(TARGET),arm)
 	ARCH          = arm
 	CROSS_COMPILE = arm-linux-gnueabihf-
@@ -29,7 +33,7 @@ else ifeq ($(TARGET),arm)
 	GCC_ARCH      = arm
 	EP_PREFIX     =
 	CFLAGS        = -marm -fpic -fshort-wchar -nostdlib
-	LDFLAGS       = -Wl,--no-wchar-size-warning
+	LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--subsystem,$(SUBSYSTEM)
 endif
 
 # Set parameters according to our platform
