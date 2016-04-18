@@ -1,53 +1,81 @@
-TARGET    = x64
+ARCH            = x64
 # You can alter the subsystem according to your EFI binary target:
 # 10 = EFI application
 # 11 = EFI boot service driver
 # 12 = EFI runtime driver
-SUBSYSTEM = 10
+SUBSYSTEM       = 10
 
-ifeq ($(TARGET),x64)
-	ARCH          = x86_64
-	GCC_ARCH      = x86_64
-	QEMU_ARCH     = x86_64
-	CROSS_COMPILE = $(GCC_ARCH)-w64-mingw32-
-	EP_PREFIX     =
-	CFLAGS        = -m64 -mno-red-zone
-	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM) -nostdlib
-else ifeq ($(TARGET),ia32)
-	ARCH          = ia32
-	GCC_ARCH      = i686
-	QEMU_ARCH     = i386
-	CROSS_COMPILE = $(GCC_ARCH)-w64-mingw32-
-	EP_PREFIX     = _
-	CFLAGS        = -m32 -mno-red-zone
-	# Can't use -nostdlib as we're missing an implementation of __umoddi3
-	# and __udivdi3, required by ia32/math.c and present in libgcc.a
-	LDFLAGS	      = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM)
-else ifeq ($(TARGET),arm)
-	ARCH          = arm
-	GCC_ARCH      = arm
-	QEMU_ARCH     = arm
-	CROSS_COMPILE = $(GCC_ARCH)-linux-gnueabihf-
-	EP_PREFIX     =
-	CFLAGS        = -marm -fpic -fshort-wchar
-	LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--subsystem,$(SUBSYSTEM) -nostdlib
-endif
-OVMF_ARCH       = $(shell echo $(TARGET) | tr a-z A-Z)
-
-# Set parameters according to our platform
-ifeq ($(SYSTEMROOT),)
-  QEMU = qemu-system-$(QEMU_ARCH) -nographic
+# Try to auto-detect the target ARCH
+ifeq ($(shell uname -o),Msys)
+  IS_MINGW32 = $(findstring MINGW32,$(shell uname -s))
+  IS_MINGW64 = $(findstring MINGW64,$(shell uname -s))
+  ifeq ($(IS_MINGW32),MINGW32)
+    ARCH        = ia32
+  endif
+  ifeq ($(IS_MINGW64),MINGW64)
+    ARCH        = x64
+  endif
 else
-  QEMU = "/c/Program Files/qemu/qemu-system-$(QEMU_ARCH)w.exe"
-  CROSS_COMPILE =
+  ifeq ($(shell uname -m),x86_64)
+    ARCH        = x64
+  else ifeq ($(shell uname -m),arm)
+    ARCH        = arm
+    CROSS_COMPILE =
+  else
+    ARCH        = ia32
+  endif
 endif
-GNUEFI_PATH = $(CURDIR)/gnu-efi
 
-CC     := $(CROSS_COMPILE)gcc
-CFLAGS += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
-CFLAGS += -I$(GNUEFI_PATH)/inc -I$(GNUEFI_PATH)/inc/$(ARCH) -I$(GNUEFI_PATH)/inc/protocol
-LDFLAGS+= -shared -e $(EP_PREFIX)EfiMain
-LIBS   := -L$(GNUEFI_PATH)/$(ARCH)/lib -lefi
+# Auto-detect the host arch for MinGW
+ifeq ($(shell uname -m),x86_64)
+  MINGW_HOST    = w64
+else
+  MINGW_HOST    = w32
+endif
+
+ifeq ($(ARCH),x64)
+  GNUEFI_ARCH   = x86_64
+  GCC_ARCH      = x86_64
+  QEMU_ARCH     = x86_64
+  CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
+  EP_PREFIX     =
+  CFLAGS        = -m64 -mno-red-zone
+  LDFLAGS       = -Wl,-dll
+else ifeq ($(ARCH),ia32)
+  GNUEFI_ARCH   = ia32
+  GCC_ARCH      = i686
+  QEMU_ARCH     = i386
+  CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
+  EP_PREFIX     = _
+  CFLAGS        = -m32 -mno-red-zone
+  LDFLAGS       = -Wl,-dll
+else ifeq ($(ARCH),arm)
+  GNUEFI_ARCH   = arm
+  GCC_ARCH      = arm
+  QEMU_ARCH     = arm
+  CROSS_COMPILE = $(GCC_ARCH)-linux-gnueabi-
+  EP_PREFIX     =
+  CFLAGS        = -marm -fpic -fshort-wchar
+  LDFLAGS       = -Wl,--no-wchar-size-warning
+endif
+OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
+
+# SYSTEMROOT is only defined on Windows systems
+ifneq ($(SYSTEMROOT),)
+  QEMU = "/c/Program Files/qemu/qemu-system-$(QEMU_ARCH)w.exe"
+  # MinGW on Windows doesn't use (tuple)-ar but (tuple)-gcc-ar
+  # so we remove the cross compiler tuple altogether
+  CROSS_COMPILE =
+else
+  QEMU = qemu-system-$(QEMU_ARCH) -nographic
+endif
+GNUEFI_DIR = $(CURDIR)/gnu-efi
+
+CC         := $(CROSS_COMPILE)gcc
+CFLAGS     += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
+CFLAGS     += -I$(GNUEFI_DIR)/inc -I$(GNUEFI_DIR)/inc/$(GNUEFI_ARCH) -I$(GNUEFI_DIR)/inc/protocol
+LDFLAGS    += -Wl,--subsystem,$(SUBSYSTEM) -nostdlib -shared -e $(EP_PREFIX)EfiMain
+LIBS       := -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -lefi
 
 OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 
@@ -67,16 +95,16 @@ ifneq ($(GCCNEWENOUGH),1)
 endif
 
 ifneq ($(GCC_ARCH),$(findstring $(GCC_ARCH), $(GCCMACHINE)))
-  $(error The selected compiler ($(CC)) is not set for $(TARGET))
+  $(error The selected compiler ($(CC)) is not set for $(ARCH))
 endif
 
 .PHONY: all clean superclean
-all: $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a main.efi
+all: $(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a main.efi
 
-$(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
-	$(MAKE) -C$(GNUEFI_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH) lib
+$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a:
+	$(MAKE) -C$(GNUEFI_DIR) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(GNUEFI_ARCH) lib
 
-%.efi: %.o $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a
+%.efi: %.o $(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a
 	@echo  [LD]  $(notdir $@)
 	@$(CC) $(LDFLAGS) $< -o $@ $(LIBS)
 
@@ -85,10 +113,10 @@ $(GNUEFI_PATH)/$(ARCH)/lib/libefi.a:
 	@$(CC) $(CFLAGS) -ffreestanding -c $<
 
 qemu: CFLAGS += -D_DEBUG
-qemu: all OVMF_$(OVMF_ARCH).fd image/efi/boot/boot$(TARGET).efi
+qemu: all OVMF_$(OVMF_ARCH).fd image/efi/boot/boot$(ARCH).efi
 	$(QEMU) -bios ./OVMF_$(OVMF_ARCH).fd -net none -hda fat:image
 
-image/efi/boot/boot$(TARGET).efi: main.efi
+image/efi/boot/boot$(ARCH).efi: main.efi
 	mkdir -p image/efi/boot
 	cp -f $< $@
 
@@ -103,5 +131,5 @@ clean:
 	rm -rf image
 
 superclean: clean
-	$(MAKE) -C$(GNUEFI_PATH) clean
+	$(MAKE) -C$(GNUEFI_DIR) ARCH=$(GNUEFI_ARCH) clean
 	rm -f *.fd

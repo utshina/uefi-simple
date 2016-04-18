@@ -32,9 +32,13 @@ launched in the QEMU emulator.
 
 If using MinGW or Linux, issue the following from a command prompt:
 
-`make TARGET=<target>`
+`make`
 
-where `target` is one of `ia32` (x86_32), `x64` (x86_64) or `arm`.
+If needed you can also add `ARCH=<arch>` and `CROSS_COMPILE=<tuple>`:
+
+`make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-`
+
+where `<arch>` can be `x64`, `ia32` or `arm`.
 
 You can also add `qemu` as a parameter to run the application in QEMU, in which
 case the debug process will download the current version of the EDK2 UEFI
