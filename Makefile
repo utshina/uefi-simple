@@ -7,8 +7,8 @@ SUBSYSTEM       = 10
 
 # Try to auto-detect the target ARCH
 ifeq ($(shell uname -o),Msys)
-  IS_MINGW32 = $(findstring MINGW32,$(shell uname -s))
-  IS_MINGW64 = $(findstring MINGW64,$(shell uname -s))
+  IS_MINGW32    = $(findstring MINGW32,$(shell uname -s))
+  IS_MINGW64    = $(findstring MINGW64,$(shell uname -s))
   ifeq ($(IS_MINGW32),MINGW32)
     ARCH        = ia32
   endif
@@ -40,7 +40,7 @@ ifeq ($(ARCH),x64)
   CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
   EP_PREFIX     =
   CFLAGS        = -m64 -mno-red-zone
-  LDFLAGS       = -Wl,-dll
+  LDFLAGS       = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM)
 else ifeq ($(ARCH),ia32)
   GNUEFI_ARCH   = ia32
   GCC_ARCH      = i686
@@ -48,17 +48,27 @@ else ifeq ($(ARCH),ia32)
   CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
   EP_PREFIX     = _
   CFLAGS        = -m32 -mno-red-zone
-  LDFLAGS       = -Wl,-dll
+  LDFLAGS       = -Wl,-dll -Wl,--subsystem,$(SUBSYSTEM)
 else ifeq ($(ARCH),arm)
   GNUEFI_ARCH   = arm
   GCC_ARCH      = arm
   QEMU_ARCH     = arm
-  CROSS_COMPILE = $(GCC_ARCH)-linux-gnueabi-
+  CROSS_COMPILE = $(GCC_ARCH)-linux-gnueabihf-
   EP_PREFIX     =
   CFLAGS        = -marm -fpic -fshort-wchar
-  LDFLAGS       = -Wl,--no-wchar-size-warning
+  LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
+  CRT0_LIBS     = -lgnuefi
 endif
 OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
+GNUEFI_DIR      = $(CURDIR)/gnu-efi
+GNUEFI_LIBS     = lib
+
+# If the compiler produces an elf binary, we need to fiddle with a PE crt0
+ifneq ($(CRT0_LIBS),)
+  CRT0_DIR      = $(GNUEFI_DIR)/$(GNUEFI_ARCH)/gnuefi
+  LDFLAGS      += -Wl,-Map=map.txt -L$(CRT0_DIR) -T $(GNUEFI_DIR)/gnuefi/elf_$(ARCH)_efi.lds $(CRT0_DIR)/crt0-efi-$(ARCH).o
+  GNUEFI_LIBS  += gnuefi
+endif
 
 # SYSTEMROOT is only defined on Windows systems
 ifneq ($(SYSTEMROOT),)
@@ -69,13 +79,14 @@ ifneq ($(SYSTEMROOT),)
 else
   QEMU = qemu-system-$(QEMU_ARCH) -nographic
 endif
-GNUEFI_DIR = $(CURDIR)/gnu-efi
 
 CC         := $(CROSS_COMPILE)gcc
+OBJCOPY    := $(CROSS_COMPILE)objcopy
 CFLAGS     += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
 CFLAGS     += -I$(GNUEFI_DIR)/inc -I$(GNUEFI_DIR)/inc/$(GNUEFI_ARCH) -I$(GNUEFI_DIR)/inc/protocol
-LDFLAGS    += -Wl,--subsystem,$(SUBSYSTEM) -nostdlib -shared -e $(EP_PREFIX)EfiMain
-LIBS       := -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -lefi
+LDFLAGS    += -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -e $(EP_PREFIX)EfiMain
+LDFLAGS    += -s -Bsymbolic -nostdlib -shared
+LIBS        = -lefi $(CRT0_LIBS)
 
 OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 
@@ -102,11 +113,18 @@ endif
 all: $(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a main.efi
 
 $(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a:
-	$(MAKE) -C$(GNUEFI_DIR) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(GNUEFI_ARCH) lib
+	$(MAKE) -C$(GNUEFI_DIR) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(GNUEFI_ARCH) $(GNUEFI_LIBS)
 
-%.efi: %.o $(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib/libefi.a
+%.efi: %.o
 	@echo  [LD]  $(notdir $@)
+ifeq ($(CRT0_LIBS),)
 	@$(CC) $(LDFLAGS) $< -o $@ $(LIBS)
+else
+	@$(CC) $(LDFLAGS) $< -o $*.elf $(LIBS)
+	@$(OBJCOPY) -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel* \
+	            -j .rela* -j .reloc -j .eh_frame -O binary $*.elf $@
+	@rm -f $*.elf
+endif
 
 %.o: %.c
 	@echo  [CC]  $(notdir $@)
