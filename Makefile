@@ -60,13 +60,14 @@ else ifeq ($(ARCH),arm)
   CRT0_LIBS     = -lgnuefi
 endif
 OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
+OVMF_ZIP        = OVMF-$(OVMF_ARCH)-r15214.zip
 GNUEFI_DIR      = $(CURDIR)/gnu-efi
 GNUEFI_LIBS     = lib
 
 # If the compiler produces an elf binary, we need to fiddle with a PE crt0
 ifneq ($(CRT0_LIBS),)
   CRT0_DIR      = $(GNUEFI_DIR)/$(GNUEFI_ARCH)/gnuefi
-  LDFLAGS      += -Wl,-Map=map.txt -L$(CRT0_DIR) -T $(GNUEFI_DIR)/gnuefi/elf_$(ARCH)_efi.lds $(CRT0_DIR)/crt0-efi-$(ARCH).o
+  LDFLAGS      += -L$(CRT0_DIR) -T $(GNUEFI_DIR)/gnuefi/elf_$(ARCH)_efi.lds $(CRT0_DIR)/crt0-efi-$(ARCH).o
   GNUEFI_LIBS  += gnuefi
 endif
 
@@ -84,11 +85,9 @@ CC         := $(CROSS_COMPILE)gcc
 OBJCOPY    := $(CROSS_COMPILE)objcopy
 CFLAGS     += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
 CFLAGS     += -I$(GNUEFI_DIR)/inc -I$(GNUEFI_DIR)/inc/$(GNUEFI_ARCH) -I$(GNUEFI_DIR)/inc/protocol
-LDFLAGS    += -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -e $(EP_PREFIX)EfiMain
-LDFLAGS    += -s -Bsymbolic -nostdlib -shared
+LDFLAGS    += -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -e $(EP_PREFIX)efi_main
+LDFLAGS    += -s -Wl,-Bsymbolic -nostdlib -shared
 LIBS        = -lefi $(CRT0_LIBS)
-
-OVMF_ZIP = OVMF-$(OVMF_ARCH)-r15214.zip
 
 ifeq (, $(shell which $(CC)))
   $(error The selected compiler ($(CC)) was not found)
