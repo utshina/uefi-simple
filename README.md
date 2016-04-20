@@ -5,14 +5,13 @@ A simple UEFI "Hello World!" style application that can:
 * be compiled on Windows or Linux (using Visual Studio 2015, MinGW or gcc).
 * be compiled for x86_32, x86_64 or ARM targets
 * be tested on the fly, through a [QEMU](http://www.qemu.org)+[OVMF](http://tianocore.github.io/ovmf/)
-  UEFI virtual machine (x86_32 or x86_64 __ONLY__).
+  UEFI virtual machine.
 
 ## Prerequisites
 
-* [Visual Studio 2015](http://www.visualstudio.com/products/visual-studio-community-vs)
-  or [MinGW](http://www.mingw.org/)/[MinGW64](http://mingw-w64.sourceforge.net/)
-  (preferably installed using [msys2](https://sourceforge.net/projects/msys2/))
-* [QEMU](http://www.qemu.org)
+* [Visual Studio 2015](http://www.visualstudio.com/products/visual-studio-community-vs) or gcc
+* [QEMU](http://www.qemu.org) __v2.5 or later__.  
+  You can find QEMU Windows binaries [here](https://qemu.weilnetz.de/w64/).
 * git
 * wget, unzip, if not using Visual Studio
 
@@ -40,12 +39,9 @@ If needed you can also add `ARCH=<arch>` and `CROSS_COMPILE=<tuple>`:
 
 where `<arch>` can be `x64`, `ia32` or `arm`.
 
-You can also add `qemu` as a parameter to run the application in QEMU, in which
-case the debug process will download the current version of the EDK2 UEFI
-firmware and run your application against it in the QEMU virtual UEFI environment.  
-Note that, in case the download fails, you can download the latest from:
-http://tianocore.sourceforge.net/wiki/OVMF and extract the `OVMF.fd` as
-`OVMF_x86_32.fd` or `OVMF_x86_64.fd` in the top directory.
+You can also add `qemu` as your `make` target to run the application under QEMU,
+in which case a relevant UEFI firmware (OVMF for x86 or QEMU_EFI for ARM) will
+be automatically downloaded to run your application against it.
 
 ## Visual Studio and ARM support
 

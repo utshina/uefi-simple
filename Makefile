@@ -58,9 +58,10 @@ else ifeq ($(ARCH),arm)
   CFLAGS        = -marm -fpic -fshort-wchar
   LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
   CRT0_LIBS     = -lgnuefi
+  QEMU_OPTS     = -M virt -cpu cortex-a15
 endif
 OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
-OVMF_ZIP        = OVMF-$(OVMF_ARCH)-r15214.zip
+OVMF_ZIP        = OVMF-$(OVMF_ARCH).zip
 GNUEFI_DIR      = $(CURDIR)/gnu-efi
 GNUEFI_LIBS     = lib
 
@@ -131,7 +132,7 @@ endif
 
 qemu: CFLAGS += -D_DEBUG
 qemu: all OVMF_$(OVMF_ARCH).fd image/efi/boot/boot$(ARCH).efi
-	$(QEMU) -bios ./OVMF_$(OVMF_ARCH).fd -net none -hda fat:image
+	$(QEMU) $(QEMU_OPTS) -bios ./OVMF_$(OVMF_ARCH).fd -net none -hda fat:image
 
 image/efi/boot/boot$(ARCH).efi: main.efi
 	mkdir -p image/efi/boot
