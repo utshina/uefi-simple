@@ -9,9 +9,9 @@ A simple UEFI "Hello World!" style application that can:
 
 ## Prerequisites
 
-* [Visual Studio 2015](http://www.visualstudio.com/products/visual-studio-community-vs) or gcc
-* [QEMU](http://www.qemu.org) __v2.5 or later__.  
-  You can find QEMU Windows binaries [here](https://qemu.weilnetz.de/w64/).
+* [Visual Studio 2015](http://www.visualstudio.com/products/visual-studio-community-vs) or gcc/make
+* [QEMU](http://www.qemu.org) __v2.5 or later__
+  (NB: You can find QEMU Windows binaries [here](https://qemu.weilnetz.de/w64/))
 * git
 * wget, unzip, if not using Visual Studio
 

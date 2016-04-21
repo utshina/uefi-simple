@@ -8,6 +8,8 @@
 
 ' Modify these variables as needed
 QEMU_PATH  = "C:\Program Files\qemu\"
+' You can also add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
+QEMU_OPTS  = "-net none -monitor none -parallel none"
 OVMF_DIR   = "http://efi.akeo.ie/OVMF/"
 ' Set to True if you need to download a file that might be cached locally
 NO_CACHE   = False
@@ -24,8 +26,9 @@ ElseIf (TARGET = "x64") Then
 ElseIf (TARGET = "ARM") Then
   UEFI_EXT  = "arm"
   QEMU_ARCH = "arm"
-  ' Sadly, we can't get keyboard input with -M virt :(
-  QEMU_OPTS = "-M virt -cpu cortex-a15 -device VGA"
+  ' You can add '-device VGA' to the options below, to get graphics output,
+  ' but then the keyboard input will not work... :(
+  QEMU_OPTS = "-M virt -cpu cortex-a15 " & QEMU_OPTS
 Else
   MsgBox("Unsupported debug target: " & TARGET)
   Call WScript.Quit(1)
@@ -122,5 +125,4 @@ End If
 ' Copy the app file as boot application and run it in QEMU
 Call shell.Run("%COMSPEC% /c mkdir ""image\efi\boot""", 0, True)
 Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\" & BOOT_NAME, True)
-' You can add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
-Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ " & QEMU_OPTS & " -L . -bios " & OVMF_BIOS & " -net none -monitor none -parallel none -hda fat:image", 1, True)
+Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ " & QEMU_OPTS & " -L . -bios " & OVMF_BIOS & " -hda fat:image", 1, True)
