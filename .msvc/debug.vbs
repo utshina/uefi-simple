@@ -8,7 +8,7 @@
 
 ' Modify these variables as needed
 QEMU_PATH  = "C:\Program Files\qemu\"
-' You can also add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
+' You can add something like "-S -gdb tcp:127.0.0.1:1234" if you plan to use gdb to debug
 QEMU_OPTS  = "-net none -monitor none -parallel none"
 OVMF_DIR   = "http://efi.akeo.ie/OVMF/"
 ' Set to True if you need to download a file that might be cached locally
@@ -26,8 +26,8 @@ ElseIf (TARGET = "x64") Then
 ElseIf (TARGET = "ARM") Then
   UEFI_EXT  = "arm"
   QEMU_ARCH = "arm"
-  ' You can add '-device VGA' to the options below, to get graphics output,
-  ' but then the keyboard input will not work... :(
+  ' You can also add '-device VGA' to the options below, to get graphics output.
+  ' But if you do, be mindful that the keyboard input may not work... :(
   QEMU_OPTS = "-M virt -cpu cortex-a15 " & QEMU_OPTS
 Else
   MsgBox("Unsupported debug target: " & TARGET)

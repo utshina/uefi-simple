@@ -93,14 +93,14 @@
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)x86_64\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)x64\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)x86_32\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)ia32\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -114,14 +114,14 @@
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)x86_64\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)x64\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.efi</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)x86_32\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)ia32\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">

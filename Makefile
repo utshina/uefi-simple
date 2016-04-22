@@ -74,32 +74,33 @@ endif
 
 # SYSTEMROOT is only defined on Windows systems
 ifneq ($(SYSTEMROOT),)
-  QEMU = "/c/Program Files/qemu/qemu-system-$(QEMU_ARCH)w.exe"
+  QEMU          = "/c/Program Files/qemu/qemu-system-$(QEMU_ARCH)w.exe"
   # MinGW on Windows doesn't use (tuple)-ar but (tuple)-gcc-ar
   # so we remove the cross compiler tuple altogether
   CROSS_COMPILE =
 else
-  QEMU = qemu-system-$(QEMU_ARCH) -nographic
+  QEMU          = qemu-system-$(QEMU_ARCH) -nographic
 endif
 
-CC         := $(CROSS_COMPILE)gcc
-OBJCOPY    := $(CROSS_COMPILE)objcopy
-CFLAGS     += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
-CFLAGS     += -I$(GNUEFI_DIR)/inc -I$(GNUEFI_DIR)/inc/$(GNUEFI_ARCH) -I$(GNUEFI_DIR)/inc/protocol
-LDFLAGS    += -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -e $(EP_PREFIX)efi_main
-LDFLAGS    += -s -Wl,-Bsymbolic -nostdlib -shared
-LIBS        = -lefi $(CRT0_LIBS)
+CC             := $(CROSS_COMPILE)gcc
+OBJCOPY        := $(CROSS_COMPILE)objcopy
+CFLAGS         += -fno-stack-protector -Wshadow -Wall -Wunused -Werror-implicit-function-declaration
+CFLAGS         += -I$(GNUEFI_DIR)/inc -I$(GNUEFI_DIR)/inc/$(GNUEFI_ARCH) -I$(GNUEFI_DIR)/inc/protocol
+CFLAGS         += -DCONFIG_$(GNUEFI_ARCH) -D__MAKEWITH_GNUEFI -DGNU_EFI_USE_MS_ABI
+LDFLAGS        += -L$(GNUEFI_DIR)/$(GNUEFI_ARCH)/lib -e $(EP_PREFIX)efi_main
+LDFLAGS        += -s -Wl,-Bsymbolic -nostdlib -shared
+LIBS            = -lefi $(CRT0_LIBS)
 
 ifeq (, $(shell which $(CC)))
   $(error The selected compiler ($(CC)) was not found)
 endif
 
-GCCVERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)
-GCCMINOR   := $(shell $(CC) -dumpversion | cut -f2 -d.)
-GCCMACHINE := $(shell $(CC) -dumpmachine)
-GCCNEWENOUGH := $(shell ( [ $(GCCVERSION) -gt "4" ]           \
-                          || ( [ $(GCCVERSION) -eq "4" ]      \
-                              && [ $(GCCMINOR) -ge "7" ] ) )  \
+GCCVERSION     := $(shell $(CC) -dumpversion | cut -f1 -d.)
+GCCMINOR       := $(shell $(CC) -dumpversion | cut -f2 -d.)
+GCCMACHINE     := $(shell $(CC) -dumpmachine)
+GCCNEWENOUGH   := $(shell ( [ $(GCCVERSION) -gt "4" ]        \
+                          || ( [ $(GCCVERSION) -eq "4" ]     \
+                              && [ $(GCCMINOR) -ge "7" ] ) ) \
                         && echo 1)
 ifneq ($(GCCNEWENOUGH),1)
   $(error You need GCC 4.7 or later)
