@@ -146,7 +146,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
@@ -175,7 +175,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
@@ -205,7 +205,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
@@ -233,7 +233,7 @@
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
@@ -263,7 +263,7 @@
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
@@ -293,7 +293,7 @@
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Disabled</ExceptionHandling>
-      <AdditionalOptions>-ffreestanding -Wno-macro-redefined</AdditionalOptions>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
       <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
