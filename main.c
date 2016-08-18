@@ -11,7 +11,9 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
 	EFI_INPUT_KEY Key;
 
+#if defined(_GNU_EFI)
 	InitializeLib(ImageHandle, SystemTable);
+#endif
 
 	/*
 	 * In addition to the standard %-based flags, Print() supports the following:
