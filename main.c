@@ -9,7 +9,7 @@
 // Application entrypoint (must be set to 'efi_main' for gnu-efi crt0 compatibility)
 EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
-	EFI_INPUT_KEY Key;
+	UINTN Event;
 
 #if defined(_GNU_EFI)
 	InitializeLib(ImageHandle, SystemTable);
@@ -28,7 +28,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 
 	Print(L"%EPress any key to exit.%N\n");
 	SystemTable->ConIn->Reset(SystemTable->ConIn, FALSE);
-	while (SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key) == EFI_NOT_READY);
+	SystemTable->BootServices->WaitForEvent(1, &SystemTable->ConIn->WaitForKey, &Event);
 #if defined(_DEBUG)
 	// If running in debug mode, use the EFI shut down call to close QEMU
 	RT->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
