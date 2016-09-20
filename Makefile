@@ -59,6 +59,16 @@ else ifeq ($(ARCH),arm)
   LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
   CRT0_LIBS     = -lgnuefi
   QEMU_OPTS     = -M virt -cpu cortex-a15
+else ifeq ($(ARCH),aa64)
+  GNUEFI_ARCH   = aarch64
+  GCC_ARCH      = aarch64
+  QEMU_ARCH     = aarch64
+  CROSS_COMPILE = $(GCC_ARCH)-linux-gnu-
+  EP_PREFIX     =
+  CFLAGS        = -fpic -fshort-wchar
+  LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
+  CRT0_LIBS     = -lgnuefi
+  QEMU_OPTS     = -M virt -cpu cortex-a57
 endif
 OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
 OVMF_ZIP        = OVMF-$(OVMF_ARCH).zip
@@ -68,7 +78,7 @@ GNUEFI_LIBS     = lib
 # If the compiler produces an elf binary, we need to fiddle with a PE crt0
 ifneq ($(CRT0_LIBS),)
   CRT0_DIR      = $(GNUEFI_DIR)/$(GNUEFI_ARCH)/gnuefi
-  LDFLAGS      += -L$(CRT0_DIR) -T $(GNUEFI_DIR)/gnuefi/elf_$(ARCH)_efi.lds $(CRT0_DIR)/crt0-efi-$(ARCH).o
+  LDFLAGS      += -L$(CRT0_DIR) -T $(GNUEFI_DIR)/gnuefi/elf_$(GNUEFI_ARCH)_efi.lds $(CRT0_DIR)/crt0-efi-$(GNUEFI_ARCH).o
   GNUEFI_LIBS  += gnuefi
 endif
 

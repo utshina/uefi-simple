@@ -31,7 +31,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	SystemTable->BootServices->WaitForEvent(1, &SystemTable->ConIn->WaitForKey, &Event);
 #if defined(_DEBUG)
 	// If running in debug mode, use the EFI shut down call to close QEMU
-	RT->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
+	SystemTable->RuntimeServices->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
 #endif
 
 	return EFI_SUCCESS;
