@@ -37,6 +37,7 @@ ifeq ($(ARCH),x64)
   GNUEFI_ARCH   = x86_64
   GCC_ARCH      = x86_64
   QEMU_ARCH     = x86_64
+  FW_BASE       = OVMF
   CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
   EP_PREFIX     =
   CFLAGS        = -m64 -mno-red-zone
@@ -45,6 +46,7 @@ else ifeq ($(ARCH),ia32)
   GNUEFI_ARCH   = ia32
   GCC_ARCH      = i686
   QEMU_ARCH     = i386
+  FW_BASE       = OVMF
   CROSS_COMPILE = $(GCC_ARCH)-$(MINGW_HOST)-mingw32-
   EP_PREFIX     = _
   CFLAGS        = -m32 -mno-red-zone
@@ -53,6 +55,7 @@ else ifeq ($(ARCH),arm)
   GNUEFI_ARCH   = arm
   GCC_ARCH      = arm
   QEMU_ARCH     = arm
+  FW_BASE       = QEMU_EFI
   CROSS_COMPILE = $(GCC_ARCH)-linux-gnueabihf-
   EP_PREFIX     =
   CFLAGS        = -marm -fpic -fshort-wchar
@@ -63,6 +66,7 @@ else ifeq ($(ARCH),aa64)
   GNUEFI_ARCH   = aarch64
   GCC_ARCH      = aarch64
   QEMU_ARCH     = aarch64
+  FW_BASE       = QEMU_EFI
   CROSS_COMPILE = $(GCC_ARCH)-linux-gnu-
   EP_PREFIX     =
   CFLAGS        = -fpic -fshort-wchar
@@ -70,8 +74,8 @@ else ifeq ($(ARCH),aa64)
   CRT0_LIBS     = -lgnuefi
   QEMU_OPTS     = -M virt -cpu cortex-a57
 endif
-OVMF_ARCH       = $(shell echo $(ARCH) | tr a-z A-Z)
-OVMF_ZIP        = OVMF-$(OVMF_ARCH).zip
+FW_ARCH         = $(shell echo $(ARCH) | tr a-z A-Z)
+FW_ZIP          = $(FW_BASE)-$(FW_ARCH).zip
 GNUEFI_DIR      = $(CURDIR)/gnu-efi
 GNUEFI_LIBS     = lib
 
@@ -142,18 +146,18 @@ endif
 	@$(CC) $(CFLAGS) -ffreestanding -c $<
 
 qemu: CFLAGS += -D_DEBUG
-qemu: all OVMF_$(OVMF_ARCH).fd image/efi/boot/boot$(ARCH).efi
-	$(QEMU) $(QEMU_OPTS) -bios ./OVMF_$(OVMF_ARCH).fd -net none -hda fat:image
+qemu: all $(FW_BASE)_$(FW_ARCH).fd image/efi/boot/boot$(ARCH).efi
+	$(QEMU) $(QEMU_OPTS) -bios ./$(FW_BASE)_$(FW_ARCH).fd -net none -hda fat:image
 
 image/efi/boot/boot$(ARCH).efi: main.efi
 	mkdir -p image/efi/boot
 	cp -f $< $@
 
-OVMF_$(OVMF_ARCH).fd:
-	wget http://efi.akeo.ie/OVMF/$(OVMF_ZIP)
-	unzip $(OVMF_ZIP) OVMF.fd
-	mv OVMF.fd OVMF_$(OVMF_ARCH).fd
-	rm $(OVMF_ZIP)
+$(FW_BASE)_$(FW_ARCH).fd:
+	wget http://efi.akeo.ie/$(FW_BASE)/$(FW_ZIP)
+	unzip $(FW_ZIP) $(FW_BASE).fd
+	mv $(FW_BASE).fd $(FW_BASE)_$(FW_ARCH).fd
+	rm $(FW_ZIP)
 
 clean:
 	rm -f main.efi *.o
