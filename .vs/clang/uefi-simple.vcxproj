@@ -34,42 +34,43 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WindowsSDKDesktopARMSupport>true</WindowsSDKDesktopARMSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WindowsSDKDesktopARMSupport>true</WindowsSDKDesktopARMSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -95,6 +96,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x64\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.efi</TargetExt>
@@ -102,6 +104,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)ia32\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <TargetExt>.efi</TargetExt>
@@ -109,6 +112,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)arm\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.efi</TargetExt>
@@ -116,6 +120,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)x64\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.efi</TargetExt>
@@ -123,6 +128,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)ia32\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <TargetExt>.efi</TargetExt>
@@ -130,18 +136,19 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)arm\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)$(ProjectName)\</IntDir>
+    <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\x86_64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\x86_64</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -162,15 +169,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\ia32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\ia32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -192,15 +199,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\arm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\arm</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -209,7 +216,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>gnu-efi.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gnu-efi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>efi_main</EntryPointSymbol>
@@ -221,13 +228,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\x86_64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\x86_64</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -250,13 +258,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\ia32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\ia32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -279,13 +288,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\arm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCClangInstallDir)\include;$(SolutionDir)\missing;$(SolutionDir)\gnu-efi\inc;$(SolutionDir)\gnu-efi\inc\arm</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;HAVE_USE_MS_ABI;GNU_EFI_USE_EXTERNAL_STDARG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
-      <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4091</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Disabled</ExceptionHandling>
+      <AdditionalOptions>-ffreestanding -Wno-macro-redefined -fno-builtin</AdditionalOptions>
+      <MSExtensions>false</MSExtensions>
     </ClCompile>
     <Lib>
       <SubSystem>EFI Application</SubSystem>
@@ -299,19 +309,19 @@
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>efi_main</EntryPointSymbol>
       <SubSystem>EFI Application</SubSystem>
-      <AdditionalDependencies>gnu-efi.lib;libcmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gnu-efi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OptimizeReferences>true</OptimizeReferences>
       <RandomizedBaseAddress />
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.c" />
+    <ClCompile Include="..\..\main.c" />
+    <ClCompile Include="..\..\missing\crt.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\debug.vbs" />
+    <None Include="..\..\debug.vbs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
