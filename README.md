@@ -46,6 +46,12 @@ be automatically downloaded to run your application against it.
 
 ## Visual Studio 2017 and ARM support
 
-Since Microsoft, in their great wisdom, decided to remove ARM compilation from
-the VS2017 native tools, ARM support is only available with CodeGen/Clang.
-To compile for ARM, you must therefore use the `uefi-simple (Clang).sln` solution.
+Please be mindful that, to enable ARM compilation support in Visual Studio 2017,
+you __MUST__ go to the _Individual components_ screen in the setup application
+and select the ARM compilers and libraries there, as they do __NOT__ appear in
+the default _Workloads_ screen:
+
+![VS2017 Individual Components](http://files.akeo.ie/pics/VS2017_Individual_Components.png)
+
+While in this section, you may also want to select the installation of _Clang/C2
+(experimental)_, so that you can open and compile the Clang solution...

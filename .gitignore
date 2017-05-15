@@ -6,6 +6,7 @@
 *.opensdf
 *.opendb
 *.fd
+*.db*
 arm
 x86_64
 x86_32

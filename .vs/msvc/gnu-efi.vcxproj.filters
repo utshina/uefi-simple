@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\arm">
+      <UniqueIdentifier>{20c8e9bd-0fa8-46d3-b825-e3eebd64ab3d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\x86_64">
       <UniqueIdentifier>{87122940-e80f-416d-a840-5e32f703f3ff}</UniqueIdentifier>
     </Filter>
@@ -89,6 +92,9 @@
     <ClCompile Include="..\..\gnu-efi\lib\error.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gnu-efi\lib\arm\math.c">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\gnu-efi\lib\x86_64\math.c">
       <Filter>Source Files\x86_64</Filter>
     </ClCompile>
@@ -100,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="..\..\gnu-efi\lib\ia32\initplat.c">
       <Filter>Source Files\ia32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gnu-efi\lib\arm\initplat.c">
+      <Filter>Source Files\arm</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
