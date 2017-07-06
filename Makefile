@@ -147,7 +147,7 @@ endif
 
 qemu: CFLAGS += -D_DEBUG
 qemu: all $(FW_BASE)_$(FW_ARCH).fd image/efi/boot/boot$(ARCH).efi
-	$(QEMU) $(QEMU_OPTS) -bios ./$(FW_BASE)_$(FW_ARCH).fd -net none -hda fat:image
+	$(QEMU) $(QEMU_OPTS) -bios ./$(FW_BASE)_$(FW_ARCH).fd -net none -hda fat:rw:image
 
 image/efi/boot/boot$(ARCH).efi: main.efi
 	mkdir -p image/efi/boot
