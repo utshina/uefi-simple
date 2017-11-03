@@ -31,7 +31,7 @@ ElseIf (TARGET = "ARM") Then
   ' You can also add '-device VGA' to the options below, to get graphics output.
   ' But if you do, be mindful that the keyboard input may not work... :(
   QEMU_OPTS = "-M virt -cpu cortex-a15 " & QEMU_OPTS
-ElseIf (TARGET = "AA64") Then
+ElseIf (TARGET = "ARM64") Then
   UEFI_EXT  = "aa64"
   QEMU_ARCH = "aarch64"
   FW_BASE   = "QEMU_EFI"
