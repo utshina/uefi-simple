@@ -21,6 +21,9 @@ else
   else ifeq ($(shell uname -m),arm)
     ARCH        = arm
     CROSS_COMPILE =
+  else ifeq ($(shell uname -m),aarch64)
+    ARCH        = aa64
+    CROSS_COMPILE =
   else
     ARCH        = ia32
   endif
@@ -154,7 +157,7 @@ image/efi/boot/boot$(ARCH).efi: main.efi
 	cp -f $< $@
 
 $(FW_BASE)_$(FW_ARCH).fd:
-	wget http://efi.akeo.ie/$(FW_BASE)/$(FW_ZIP)
+	wget https://efi.akeo.ie/$(FW_BASE)/$(FW_ZIP)
 	unzip $(FW_ZIP) $(FW_BASE).fd
 	mv $(FW_BASE).fd $(FW_BASE)_$(FW_ARCH).fd
 	rm $(FW_ZIP)

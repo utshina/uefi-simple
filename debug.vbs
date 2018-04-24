@@ -44,7 +44,7 @@ BOOT_NAME  = "boot" & UEFI_EXT & ".efi"
 QEMU_EXE   = "qemu-system-" & QEMU_ARCH & "w.exe"
 
 FW_ARCH = UCase(UEFI_EXT)
-FW_DIR  = "http://efi.akeo.ie/" & FW_BASE & "/"
+FW_DIR  = "https://efi.akeo.ie/" & FW_BASE & "/"
 FW_ZIP  = FW_BASE & "-" & FW_ARCH & ".zip"
 FW_FILE = FW_BASE & "_" & FW_ARCH & ".fd"
 FW_URL  = FW_DIR & FW_ZIP
