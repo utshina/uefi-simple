@@ -2,7 +2,7 @@ UEFI:SIMPLE - EFI development made easy
 =======================================
 
 A simple UEFI "Hello World!" style application that can:
-* be compiled on Windows or Linux, using Visual Studio 2017, MinGW or gcc.
+* be compiled on Windows or Linux, using Visual Studio 2019, MinGW or gcc.
 * be compiled for x86_32, x86_64, ARM or ARM64/AARCH64 targets
 * be tested on the fly, through a [QEMU](https://www.qemu.org/) + 
  [OVMF](https://github.com/tianocore/tianocore.github.io/wiki/OVMF) or
