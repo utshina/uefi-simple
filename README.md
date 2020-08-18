@@ -36,9 +36,10 @@ If using MinGW or Linux, issue the following from a command prompt:
 
 `make`
 
-If needed you can also add `ARCH=<arch>` and `CROSS_COMPILE=<tuple>`:
+If needed you can also add `ARCH=<arch>` and `CROSS_COMPILE=<tuple>`, e.g.:
 
-`make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-`
+* `make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-`
+* `make ARCH=aa64 CROSS_COMPILE=aarch64-linux-gnu-`
 
 where `<arch>` can be `x64`, `ia32`, `arm` or `aa64`.
 
