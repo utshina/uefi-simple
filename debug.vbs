@@ -20,14 +20,17 @@ If (TARGET = "x86") Then
   UEFI_EXT  = "ia32"
   QEMU_ARCH = "i386"
   FW_BASE   = "OVMF"
+  BIOS_OPT  = "-pflash"
 ElseIf (TARGET = "x64") Then
   UEFI_EXT  = "x64"
   QEMU_ARCH = "x86_64"
   FW_BASE   = "OVMF"
+  BIOS_OPT  = "-pflash"
 ElseIf (TARGET = "ARM") Then
   UEFI_EXT  = "arm"
   QEMU_ARCH = "arm"
   FW_BASE   = "QEMU_EFI"
+  BIOS_OPT  = "-bios"
   ' You can also add '-device VGA' to the options below, to get graphics output.
   ' But if you do, be mindful that the keyboard input may not work... :(
   QEMU_OPTS = "-M virt -cpu cortex-a15 " & QEMU_OPTS
@@ -35,6 +38,7 @@ ElseIf (TARGET = "ARM64") Then
   UEFI_EXT  = "aa64"
   QEMU_ARCH = "aarch64"
   FW_BASE   = "QEMU_EFI"
+  BIOS_OPT  = "-bios"
   QEMU_OPTS = "-M virt -cpu cortex-a57 " & QEMU_OPTS
 Else
   MsgBox("Unsupported debug target: " & TARGET)
@@ -138,4 +142,7 @@ End If
 ' Copy the app file as boot application and run it in QEMU
 Call shell.Run("%COMSPEC% /c mkdir ""image\efi\boot""", 0, True)
 Call fso.CopyFile(WScript.Arguments(0), "image\efi\boot\" & BOOT_NAME, True)
-Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ " & QEMU_OPTS & " -L . -bios " & FW_FILE & " -hda fat:rw:image", 1, True)
+' NB: We mount the UEFI firmware as -drive rather than -bios so that we can
+' persist NV Variables, such as Secure Boot ones, into the firmware file.
+' However, we use -bios for ARM images as -drive doesn't work there
+Call shell.Run("""" & QEMU_PATH & QEMU_EXE & """ " & QEMU_OPTS & " -L . " & BIOS_OPT & " " & FW_FILE & " -hda fat:rw:image")
