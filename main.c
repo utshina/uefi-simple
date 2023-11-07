@@ -1,6 +1,6 @@
 /*
  * UEFI:SIMPLE - UEFI development made easy
- * Copyright ©️ 2014-2021 Pete Batard <pete@akeo.ie> - Public Domain
+ * Copyright ©️ 2014-2023 Pete Batard <pete@akeo.ie> - Public Domain
  * See COPYING for the full licensing terms.
  */
 #include <efi.h>
@@ -8,17 +8,15 @@
 #include <libsmbios.h>
 
 #if defined(_M_X64) || defined(__x86_64__)
-static CHAR16* Arch = L"x64";
-static CHAR16* ArchName = L"64-bit x86";
+static CHAR16* ArchName = L"x86 64-bit";
 #elif defined(_M_IX86) || defined(__i386__)
-static CHAR16* Arch = L"ia32";
-static CHAR16* ArchName = L"32-bit x86";
+static CHAR16* ArchName = L"x86 32-bit";
 #elif defined (_M_ARM64) || defined(__aarch64__)
-static CHAR16* Arch = L"aa64";
-static CHAR16* ArchName = L"64-bit ARM";
+static CHAR16* ArchName = L"ARM 64-bit";
 #elif defined (_M_ARM) || defined(__arm__)
-static CHAR16* Arch = L"arm";
-static CHAR16* ArchName = L"32-bit ARM";
+static CHAR16* ArchName = L"ARM 32-bit";
+#elif defined (_M_RISCV64) || (defined(__riscv) && (__riscv_xlen == 64))
+static CHAR16* ArchName = L"RISC-V 64-bit";
 #else
 #  error Unsupported architecture
 #endif
@@ -112,7 +110,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	 *   %E       Set output attribute to error
 	 *   %r       Human readable version of a status code
 	 */
-	Print(L"\n%H*** UEFI Simple ***%N\n\n");
+	Print(L"\n%H*** UEFI Simple (%s) ***%N\n\n", ArchName);
 
 	PrintSystemInfo();
 

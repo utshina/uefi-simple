@@ -24,6 +24,9 @@ else
   else ifeq ($(shell uname -m),aarch64)
     ARCH        = aa64
     CROSS_COMPILE =
+  else ifeq ($(shell uname -m),riscv64)
+    ARCH        = riscv64
+    CROSS_COMPILE =
   else
     ARCH        = ia32
   endif
@@ -76,6 +79,17 @@ else ifeq ($(ARCH),aa64)
   LDFLAGS       = -Wl,--no-wchar-size-warning -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
   CRT0_LIBS     = -lgnuefi
   QEMU_OPTS     = -M virt -cpu cortex-a57
+else ifeq ($(ARCH),riscv64)
+  GNUEFI_ARCH   = riscv64
+  GCC_ARCH      = riscv64
+  QEMU_ARCH     = riscv64
+  FW_BASE       = QEMU_EFI
+  CROSS_COMPILE = $(GCC_ARCH)-linux-gnu-
+  EP_PREFIX     =
+  CFLAGS        = -fpic -fshort-wchar
+  LDFLAGS       = -Wl,--defsym=EFI_SUBSYSTEM=$(SUBSYSTEM)
+  CRT0_LIBS     = -lgnuefi
+  QEMU_OPTS     = -M virt -cpu sifive_u
 endif
 FW_ARCH         = $(shell echo $(ARCH) | tr a-z A-Z)
 FW_ZIP          = $(FW_BASE)-$(FW_ARCH).zip
@@ -112,8 +126,8 @@ ifeq (, $(shell which $(CC)))
   $(error The selected compiler ($(CC)) was not found)
 endif
 
-GCCVERSION     := $(shell $(CC) -dumpversion | cut -f1 -d.)
-GCCMINOR       := $(shell $(CC) -dumpversion | cut -f2 -d.)
+GCCVERSION     := $(shell $(CC) -dumpversion | cut -f1 -d. | cut -f1 -d-)
+GCCMINOR       := $(shell $(CC) -dumpversion | cut -f2 -d. | cut -f1 -d-)
 GCCMACHINE     := $(shell $(CC) -dumpmachine)
 GCCNEWENOUGH   := $(shell ( [ $(GCCVERSION) -gt "4" ]        \
                           || ( [ $(GCCVERSION) -eq "4" ]     \
